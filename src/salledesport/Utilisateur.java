@@ -4,6 +4,8 @@
  */
 package salledesport;
 
+import java.util.Scanner;
+
 /**
  *
  * @author gabri
@@ -16,9 +18,14 @@ public class Utilisateur {
     public void seConnecter() {}
     public void majMotDePasse() {}
     
-    public Utilisateur(String idMail, String mdp){
-        this.idMail = idMail;
-        this.mdp = mdp;
+    public Utilisateur(){
+        
+        Scanner S = new Scanner(System.in);
+        
+        System.out.println("Veuillez rentre votre nom : ");
+        this.idMail = S.nextLine();
+        System.out.println("Veuillez rentre votre prenom : ");
+        this.mdp = S.nextLine();
     }
     
 }
