@@ -5,6 +5,7 @@
 package salledesport;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -18,21 +19,64 @@ public class Client extends Utilisateur{
     private String tel;
     private String adresse;
     private String typeAbonnement; // sem/tri/an
-    private String etatAbonnement;
+    private boolean etatAbonnement;
     
     // Listes demandées
-    private ArrayList<Cours> listeCoursFuturs = new ArrayList<>();
-    private ArrayList<Cours> listeCoursPasses = new ArrayList<>();
+    private ArrayList<Cours> listeCoursFuturs;
+    private ArrayList<Cours> listeCoursPasses;
 
     //Constructeur Client
     
-    public Client(String idMail, String mdp) {
+    public Client(String idMail, String mdp, int numClient, String nom, String prenom, String tel , String adresse, String typeAbonnement, boolean etatAbonnement) {
         super(idMail, mdp);
+        this.numClient = numClient;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.tel = tel;
+        this.adresse = adresse;
+        this.typeAbonnement = typeAbonnement;
+        this.etatAbonnement = etatAbonnement;
+        listeCoursFuturs = new ArrayList();
+        listeCoursPasses = new ArrayList();
+        
     }
 
     // Méthodes Client (void)
     
-    public void CreeCompte(){}
+    public void CreeCompte(){
+    
+    String nom;
+    String prenom;
+    String tel;
+    String adresse;
+    String typeAbonnement;
+    String mail;
+    String mdp;
+    boolean etatAbonnement;
+            
+    Scanner S = new Scanner(System.in);
+    Scanner I = new Scanner(System.in);
+
+    System.out.println("Veuillez rentre votre nom : ");
+    nom = S.nextLine();
+    System.out.println("Veuillez rentre votre prenom : ");
+    prenom = S.nextLine();
+    System.out.println("Veuillez rentre votre Numero de telephone : ");
+    tel = S.nextLine();
+    System.out.println("Veuillez rentre votre adresse : ");
+    adresse = S.nextLine();
+    System.out.println("Veuillez rentre votre type d'abonnement (sem,tri,an) : ");
+    typeAbonnement = S.nextLine();
+    System.out.println("Veuillez rentre votre type adresse mail : ");
+    mail = S.nextLine();
+    System.out.println("Veuillez rentre votre type mot de passe : ");
+    mdp = S.nextLine();
+    etatAbonnement = true;
+    //Client(String mail, String mdp, int numClient, String nom, String prenom, String tel , String adresse, String typeAbonnement, boolean etatAbonnement);
+    
+    
+    }
+    
     public void ConsulterCompte(){}
     public void MAJinfoCOmpte(){}
     public void ConsulterCoursFutur(){}
