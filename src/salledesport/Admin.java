@@ -15,7 +15,7 @@ public class Admin extends Utilisateur {
     public Admin(String idMail, String mdp) {
         super(idMail, mdp);
     }
-    // Hérite des attributs de Utilisateur
+    // Hérite des attributs de Utilisateur oui 
 
     // Méthodes Admin (void)
     public void consulterComptesClients() {}
