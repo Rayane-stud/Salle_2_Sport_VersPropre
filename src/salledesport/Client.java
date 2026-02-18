@@ -108,7 +108,7 @@ public class Client extends Utilisateur{
                 
             /*    
             case 2: // mdp
-                System.out.println("Nombre de pages :");
+                System.out.println("Nombre de pages :"); //i
                 nbPages = scanner.nextInt();
                 scanner.nextLine();
                 System.out.println("Matière :");
