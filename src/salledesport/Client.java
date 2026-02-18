@@ -40,7 +40,7 @@ public class Client extends Utilisateur{
         listeCoursPasses = new ArrayList();
         
     }
-
+    // CHANGER PAR GAB
     // Méthodes Client (void)
     
     public void CreeCompte(){
@@ -84,10 +84,14 @@ public class Client extends Utilisateur{
     }
     
     public void ConsulterCompte(Client client){
+        System.out.println("Voici votre mail : " + client.idMail );
+        System.out.println("Voici votre mdp : " + client.mdp );
         System.out.println("Voici votre nom : " + client.nom );
         System.out.println("Voici votre prenom : " + client.prenom );
         System.out.println("Voici votre numero de tel : " + client.tel );
-        System.out.println("Voici votre numero de tel : " + client.tel );
+        System.out.println("Voici votre adresse : " + client.adresse );
+        System.out.println("Voici votre nom : " + client.nom );
+
 
     
     }
