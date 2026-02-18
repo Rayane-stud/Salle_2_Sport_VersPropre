@@ -16,7 +16,7 @@ public class Admin extends Utilisateur {
         super(idMail, mdp);
     }
     // Hérite des attributs de Utilisateur oui 
-
+  
     // Méthodes Admin (void)
     public void consulterComptesClients() {}
     public void rechercheClient() {}
