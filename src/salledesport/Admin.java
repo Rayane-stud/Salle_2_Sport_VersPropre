@@ -13,7 +13,7 @@ public class Admin extends Utilisateur {
     //Constructeur Admin
     
     public Admin(String idMail, String mdp) {
-        super(idMail, mdp);
+       
     }
     // Hérite des attributs de Utilisateur oui 
   

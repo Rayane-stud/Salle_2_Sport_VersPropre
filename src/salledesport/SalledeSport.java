@@ -15,7 +15,9 @@ public class SalledeSport {
      */
     public static void main(String[] args) {
         // TODO code application logic here Rayane got in the place
+        Client a;
         
+        a = new Client();
     }
     
 }

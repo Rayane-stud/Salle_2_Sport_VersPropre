@@ -27,7 +27,7 @@ public class Client extends Utilisateur{
 
     //Constructeur Client
     
-    public Client(String idMail, String mdp, int numClient, String nom, String prenom, String tel , String adresse, String typeAbonnement, boolean etatAbonnement) {
+    /*public Client(String idMail, String mdp, int numClient, String nom, String prenom, String tel , String adresse, String typeAbonnement, boolean etatAbonnement) {
         super(idMail, mdp);
         this.numClient = numClient;
         this.nom = nom;
@@ -42,38 +42,28 @@ public class Client extends Utilisateur{
     }
     // CHANGER PAR GAB
     // Méthodes Client (void)
+    */
+    public Client(){
     
-    public void CreeCompte(){
-    
-    String nom;
-    String prenom;
-    String tel;
-    String adresse;
-    String typeAbonnement;
-    String mail;
-    String mdp;
-    boolean etatAbonnement;
             
     Scanner S = new Scanner(System.in);
     Scanner I = new Scanner(System.in);
 
     System.out.println("Veuillez rentre votre nom : ");
-    nom = S.nextLine();
+    this.nom = S.nextLine();
     System.out.println("Veuillez rentre votre prenom : ");
-    prenom = S.nextLine();
+    this.prenom = S.nextLine();
     System.out.println("Veuillez rentre votre Numero de telephone : ");
-    tel = S.nextLine();
+    this.tel = S.nextLine();
     System.out.println("Veuillez rentre votre adresse : ");
-    adresse = S.nextLine();
+    this.adresse = S.nextLine();
     System.out.println("Veuillez rentre votre type d'abonnement (sem,tri,an) : ");
     typeAbonnement = S.nextLine();
     System.out.println("Veuillez rentre votre type adresse mail : ");
-    mail = S.nextLine();
+    this.idMail = S.nextLine();
     System.out.println("Veuillez rentre votre type mot de passe : ");
-    mdp = S.nextLine();
+    this.mdp = S.nextLine();
     etatAbonnement = true;
-    //Client(String mail, String mdp, int numClient, String nom, String prenom, String tel , String adresse, String typeAbonnement, boolean etatAbonnement);
-    
     
     }
     
