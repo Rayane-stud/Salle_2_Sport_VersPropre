@@ -77,7 +77,20 @@ public class Client extends Utilisateur{
     
     }
     
-    public void ConsulterCompte(){}
+    public int generernum(){
+    
+        return 0;
+    
+    }
+    
+    public void ConsulterCompte(Client client){
+        System.out.println("Voici votre nom : " + client.nom );
+        System.out.println("Voici votre prenom : " + client.prenom );
+        System.out.println("Voici votre numero de tel : " + client.tel );
+        System.out.println("Voici votre numero de tel : " + client.tel );
+
+    
+    }
     public void MAJinfoCOmpte(){}
     public void ConsulterCoursFutur(){}
     public void SinscrirCoursFutur(){}
