@@ -89,6 +89,8 @@ public class Client extends Utilisateur{
     public void MAJinfoCOmpte(){
         
         Scanner I = new Scanner(System.in);
+        Scanner S = new Scanner(System.in);
+
         int c = 100;
         
         
@@ -98,13 +100,13 @@ public class Client extends Utilisateur{
         c = I.nextInt();
         switch(c) {
             
-        /*  case 1: // mail
-                System.out.println("Nombre de pages :");
-                int nbPages = scanner.nextInt();
-                scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages);
+          case 1: // mail
+                System.out.println("Rentrez le nouveau mail :");
+                this.idMail = S.nextLine();
                 break;
                 
+                
+            /*    
             case 2: // mdp
                 System.out.println("Nombre de pages :");
                 nbPages = scanner.nextInt();
