@@ -45,7 +45,7 @@ public class Client extends Utilisateur{
     */
     public Client(){
     
-            
+    int c;        
     Scanner S = new Scanner(System.in);
     Scanner I = new Scanner(System.in);
 
@@ -57,11 +57,28 @@ public class Client extends Utilisateur{
     this.tel = S.nextLine();
     System.out.println("Veuillez rentre votre adresse : ");
     this.adresse = S.nextLine();
-    System.out.println("Veuillez rentre votre type d'abonnement (sem,tri,an) : ");
-    typeAbonnement = S.nextLine();
+    System.out.println("Veuillez rentrez le  type d'abonnement :");
+                System.out.println("1: sem, 2: tri, 3: an");
+                c = I.nextInt();
+                switch(c) {
+            
+                    case 1: // sem
+                        this.typeAbonnement = "sem";
+                        break;
+                 
+                    case 2: // tri
+                        this.typeAbonnement = "tri";
+                        break;
+                
+                    case 3: // an
+                        this.typeAbonnement = "an";
+                        break;
+                    default:
+                        System.out.println("Type non valide.");    
+                    }
     System.out.println("Veuillez rentre votre type adresse mail : ");
     this.idMail = S.nextLine();
-    System.out.println("Veuillez rentre votre type mot de passe : ");
+    System.out.println("Veuillez rentre votre mot de passe : ");
     this.mdp = S.nextLine();
     etatAbonnement = true;
     
@@ -73,14 +90,14 @@ public class Client extends Utilisateur{
     
     }
     
-    public void ConsulterCompte(Client client){
-        System.out.println("Voici votre mail : " + client.idMail );
-        System.out.println("Voici votre mdp : " + client.mdp );
-        System.out.println("Voici votre nom : " + client.nom );
-        System.out.println("Voici votre prenom : " + client.prenom );
-        System.out.println("Voici votre numero de tel : " + client.tel );
-        System.out.println("Voici votre adresse : " + client.adresse );
-        System.out.println("Voici votre type d'abonnement : " + client.typeAbonnement );
+    public void ConsulterCompte(){
+        System.out.println("Voici votre mail : " + this.idMail );
+        System.out.println("Voici votre mdp : " + this.mdp );
+        System.out.println("Voici votre nom : " + this.nom );
+        System.out.println("Voici votre prenom : " + this.prenom );
+        System.out.println("Voici votre numero de tel : " + this.tel );
+        System.out.println("Voici votre adresse : " + this.adresse );
+        System.out.println("Voici votre type d'abonnement : " + this.typeAbonnement );
 
     }
     
@@ -104,73 +121,59 @@ public class Client extends Utilisateur{
                 System.out.println("Rentrez le nouveau mail :");
                 this.idMail = S.nextLine();
                 break;
-                
-                
-            /*    
+                 
             case 2: // mdp
-                System.out.println("Nombre de pages :"); //i
-                nbPages = scanner.nextInt();
-                scanner.nextLine();
-                System.out.println("Matière :");
-                String matiere = scanner.nextLine();
-                System.out.println("Niveau :");
-                String niveau = scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages, matiere, niveau);
+                System.out.println("Rentrez le nouveau mdp :");
+                this.mdp = S.nextLine();
                 break;
                 
             case 3: // nom
-                System.out.println("Périodicité (hebdomadaire/mensuel/trimestriel) :");
-                String perio = scanner.nextLine();
-                System.out.println("Date de publication (format yyyy-MM-dd) :");
-                String dateStr = scanner.nextLine();
-                LocalDate datePub = LocalDate.parse(dateStr);
-                ajouter(description, prix, nbExe, numero, perio, datePub);
+                System.out.println("Rentrez le nouveau nom :");
+                this.nom = S.nextLine();
                 break;
             
             case 4: // prenom
-                System.out.println("Périodicité (hebdomadaire/mensuel/trimestriel) :");
-                String perio = scanner.nextLine();
-                System.out.println("Date de publication (format yyyy-MM-dd) :");
-                String dateStr = scanner.nextLine();
-                LocalDate datePub = LocalDate.parse(dateStr);
-                ajouter(description, prix, nbExe, numero, perio, datePub);
+                System.out.println("Rentrez le nouveau prenom :");
+                this.prenom = S.nextLine();
                 break;
             
             case 5: // tel
-                System.out.println("Nombre de pages :");
-                int nbPages = scanner.nextInt();
-                scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages);
+                System.out.println("Rentrez le nouveau numero de telephone :");
+                this.tel = S.nextLine();
                 break;
             
             case 6: // adresse
-                System.out.println("Nombre de pages :");
-                int nbPages = scanner.nextInt();
-                scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages);
-                break;
-            
-            case 7: // type d'abonnement
-                System.out.println("Nombre de pages :");
-                int nbPages = scanner.nextInt();
-                scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages);
-                break;
-            
-            case 0: // sortir
-                System.out.println("Nombre de pages :");
-                int nbPages = scanner.nextInt();
-                scanner.nextLine();
-                ajouter(description, prix, nbExe, numero, nbPages);
-                break;
+                System.out.println("Rentrez la nouvelle adresse :");
+                this.adresse = S.nextLine();
+                break; 
                 
-            default:
-                System.out.println("Type non valide.");
-                i--; // Réessayer cet article
-                continue;*/
+                
+            case 7: // type d'abonnement
+                System.out.println("Rentrez le nouveau type d'abonnement :");
+                System.out.println("1: sem, 2: tri, 3: an");
+                c = I.nextInt();
+                switch(c) {
+            
+                    case 1: // sem
+                        this.typeAbonnement = "sem";
+                        break;
+                 
+                    case 2: // tri
+                        this.typeAbonnement = "tri";
+                        break;
+                
+                    case 3: // an
+                        this.typeAbonnement = "an";
+                        break;   
+                    }
+                    
+                break;
         }
     
         }
+      System.out.println("Voici vos nouvelles information");
+      this.ConsulterCompte();
+
     }
     public void ConsulterCoursFutur(){}
     public void SinscrirCoursFutur(){}
