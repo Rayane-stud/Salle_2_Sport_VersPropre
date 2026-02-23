@@ -22,7 +22,7 @@ public class Client extends Utilisateur{
     private boolean etatAbonnement;
     
     // Listes demandées
-    private ArrayList<Cours> listeCoursFuturs;
+    public ArrayList<Cours> listeCoursFuturs;
     private ArrayList<Cours> listeCoursPasses;
 
     //Constructeur Client
@@ -84,11 +84,6 @@ public class Client extends Utilisateur{
     
     }
     
-    public int generernum(){
-    
-        return 0;
-    
-    }
     
     public void ConsulterCompte(){
         System.out.println("Voici votre mail : " + this.idMail );
