@@ -110,5 +110,62 @@ public class Salle {
     
     //___________________Methodes de sauvegarde et de chargement________
     
-}
+
 // Aaaaaaaaaaaaaaaaa1
+
+    public void ConsulterCompte(){
+        for (Client client : listeClients){
+            if (client.getNom().equals(this.nom)){
+            client.afficherProfil();
+            }
+            }
+        }
+    
+    
+    
+    
+    
+    public void RechercheCritère(){
+    
+    }
+    
+    public void DesactiverAbonnemment(){
+        boolean b = false;
+        this.modifAbonnementDesactif(b);}
+        
+    
+    
+    public void ReactiverAbonnemment(){
+        this.modifAbonnementActif(true);
+    }
+    
+    
+    // Affiche la liste des cours futurs
+    public void ConsulterListeCoursFuturs() {
+        System.out.println("_____ Les cours à venir _____");
+        if (listeCoursFuturs.isEmpty()) {
+            System.out.println("Aucun cours à venir."); // <== A modif pr passage au graphique
+        } else {
+            for (Cours c : listeCoursFuturs) { // methode for each de parcours de liste 
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour()  + " à " + c.getHeurecour()); // <== a Modif pr la partie graphique
+            }
+        }
+    }
+
+    // Affiche la liste de ses cours passés
+    public void ConsulterListeCoursPasses() {
+        System.out.println("______ Les cours passes ______");
+        if (listeCoursPassees.isEmpty()) {
+            System.out.println("Aucun cours passer."); // <== A modifier quand on passera en graphique
+        } else {
+            for (Cours c : listeCoursPassees) {
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() + " à " + c.getHeurecour()); // <== A modif pr graphique
+            }
+        }
+    }
+    
+    
+    }
+    
+    
+    
