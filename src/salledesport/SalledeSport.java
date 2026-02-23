@@ -18,6 +18,10 @@ public class SalledeSport {
         Client a;
         
         a = new Client();
+        a.ConsulterCompte();
+        a.MAJinfoCOmpte();
+        Cours b;
+        //b = new Cours();
     }
     
 }
