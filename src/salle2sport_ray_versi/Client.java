@@ -100,7 +100,7 @@ public class Client extends Utilisateur{
         this.abonnementActif = actif;
     }
     
-    public void modifAbonnementDesactif(boolean inactif) {
+    public void modifAbonnementDesactif(boolean inactif) {  
         this.abonnementActif = inactif;
     }
 

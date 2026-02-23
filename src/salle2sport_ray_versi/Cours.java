@@ -15,7 +15,7 @@ import java.util.List;
  **
  * @author rayan
  */
-public class Cours {
+public class Cours implements Comparable<Cours> {
     // Attributs : 
     private String activite;
     private LocalDate date;
@@ -36,6 +36,13 @@ public class Cours {
         this.nbre_places = nombrePlaces;
         this.listeInscrits = new ArrayList<>();
 }
+    // interface comparable pour pouvoir comparer les cours par popularité ( nbr d'inscrits ) 
+    @Override
+    public int compareTo(Cours autre) {
+        return autre.getNbreInscrits() - this.getNbreInscrits(); // grand → petit
+    }
+    
+    
     
     //                                 Méthodes : 
     // _____________________________________________ Getters :
