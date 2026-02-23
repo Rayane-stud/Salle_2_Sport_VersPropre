@@ -131,12 +131,13 @@ public class Salle {
     
     public void DesactiverAbonnemment(){
         boolean b = false;
-        this.modifAbonnementDesactif(b);}
+        //this.modifAbonnementDesactif(b);
+    }
         
     
     
     public void ReactiverAbonnemment(){
-        this.modifAbonnementActif(true);
+        //this.modifAbonnementActif(true);
     }
     
     
