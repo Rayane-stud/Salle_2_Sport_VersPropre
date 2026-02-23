@@ -47,7 +47,7 @@ public class Client extends Utilisateur{
 }
 
     public String getNom() {
-        return nom;
+        return this.nom;
     }
 
     public String getPrenom() {
@@ -100,6 +100,11 @@ public class Client extends Utilisateur{
         this.abonnementActif = actif;
     }
     
+    public void modifAbonnementDesactif(boolean inactif) {
+        this.abonnementActif = inactif;
+    }
+
+    
     public void setNumClient(int num){
         this.numClient = num;
     }
@@ -129,14 +134,14 @@ public class Client extends Utilisateur{
     // Affiche les informations du client
     public void afficherProfil() {
         System.out.println("____ Mon Compte ____");
-        System.out.println("Numéro client  : " + numClient);
-        System.out.println("Nom            : " + nom);
-        System.out.println("Prénom         : " + prenom);
-        System.out.println("Email          : " + id_email);
-        System.out.println("Téléphone      : " + tel);
-        System.out.println("Adresse        : " + adresse);
-        System.out.println("Abonnement     : " + typeAbonnement);
-        System.out.println("Etat           : " + (abonnementActif ? "Actif" : "Inactif"));  // Operateur ternaire ( if else simplifié ) 
+        System.out.println("Numéro client  : " + this.numClient);
+        System.out.println("Nom            : " + this.nom);
+        System.out.println("Prénom         : " + this.prenom);
+        System.out.println("Email          : " + this.id_email);
+        System.out.println("Téléphone      : " + this.tel);
+        System.out.println("Adresse        : " + this.adresse);
+        System.out.println("Abonnement     : " + this.typeAbonnement);
+        System.out.println("Etat           : " + (this.abonnementActif ? "Actif" : "Inactif"));  // Operateur ternaire ( if else simplifié ) 
     }
 
     // Affiche la liste des cours futurs du client
