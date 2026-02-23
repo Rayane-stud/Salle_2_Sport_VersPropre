@@ -100,6 +100,9 @@ public class Client extends Utilisateur{
         this.abonnementActif = actif;
     }
     
+    public void setNumClient(int num){
+        this.numClient = num;
+    }
     
     //_______________________________________________________________gestion des listes de cours : 
     // Ajoute un cours à la liste des cours a venir
@@ -140,11 +143,10 @@ public class Client extends Utilisateur{
     public void afficherCoursFuturs() {
         System.out.println("_____ Mes cours à venir _____");
         if (listeCoursFuturs.isEmpty()) {
-            System.out.println("Aucun cours à venir.");
+            System.out.println("Aucun cours à venir."); // <== A modif pr passage au graphique
         } else {
             for (Cours c : listeCoursFuturs) { // methode for each de parcours de liste 
-                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() // Utilisation de getteurs a faire plus tard dans la classe cours 
-                                 + " à " + c.getHeurecour());
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour()  + " à " + c.getHeurecour()); // <== a Modif pr la partie graphique
             }
         }
     }
@@ -153,12 +155,13 @@ public class Client extends Utilisateur{
     public void afficherCoursPasses() {
         System.out.println("______ Mes cours passes ______");
         if (listeCoursPasses.isEmpty()) {
-            System.out.println("Aucun cours passer.");
+            System.out.println("Aucun cours passer."); // <== A modifier quand on passera en graphique
         } else {
             for (Cours c : listeCoursPasses) {
-                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour()
-                                 + " à " + c.getHeurecour());
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() + " à " + c.getHeurecour()); // <== A modif pr graphique
             }
         }
     }
 }
+
+// Fonctions d'affichages a modifier pour recuperer des String a afficher dans l'interface graphique
