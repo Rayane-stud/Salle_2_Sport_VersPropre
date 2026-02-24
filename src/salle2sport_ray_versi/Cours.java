@@ -27,14 +27,15 @@ public class Cours implements Comparable<Cours> {
     
     
     //Constructeur : 
-    // id_cours a initialiser dans la lcasse salle avec une methode generer id lors de la creation de chaque cours 
-    public Cours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
+    // id_cours a initialiser dans la classe salle avec une methode generer id lors de la creation de chaque cours 
+    public Cours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces, int id) {
         this.activite = activite;
         this.date = date;
         this.heure = heure;
         this.typeCours = typeCours;
         this.nbre_places = nombrePlaces;
         this.listeInscrits = new ArrayList<>();
+        this.id_cours = id;
 }
     // interface comparable pour pouvoir comparer les cours par popularité ( nbr d'inscrits ) 
     @Override
