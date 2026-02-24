@@ -75,6 +75,9 @@ public class Cours implements Comparable<Cours> {
     }
     
     
+    
+    
+    
     // _____________________________________________ Modifieurs :
     // pas de modifieur pour la liste car ca ne serait fais qu'a travers ajouter ou enlever singuliers
     public void setIdCours(int idCours)          { this.id_cours = idCours; }
@@ -96,7 +99,7 @@ public class Cours implements Comparable<Cours> {
 
     // Vérifie si aucun client n'est inscrit
     public boolean aucunInscrit() {
-        return listeInscrits.isEmpty();
+        return this.listeInscrits.isEmpty();
     }
 
     // Retourne le nombre de clients inscrits
