@@ -21,7 +21,7 @@ public class Salle {
     private ArrayList<Cours> listeCoursFuturs;
     private ArrayList<Cours> listeCoursPassees;
     private String nomFichSauvegarde;
-    private int prochainIdCours = 0; // identifiant du prochains cours
+    private int prochainIdCours = 1; // identifiant du prochains cours
     
     // Constructeur : 
     public Salle(String nom, Admin admin, String nomFichierSauvegarde) {
@@ -167,10 +167,10 @@ public class Salle {
     // Crée un cours et l'ajoute à la liste des cours futurs
     // A verifier
     public Cours creerCours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
-        Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces);
+        Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces,prochainIdCours);
         getCoursFuturs().add(c);
         c.setIdCours(prochainIdCours++);
-        return c; // <== A FAIRE
+        return c;
     }
     
     // Supprime un cours futur si aucun client n'est inscrit
