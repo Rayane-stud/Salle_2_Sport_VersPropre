@@ -149,8 +149,11 @@ public class Salle {
     }
     
     // Crée un cours et l'ajoute à la liste des cours futurs
+    // A verifier
     public Cours creerCours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
-        return null; // <== A FAIRE
+        Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces);
+        getCoursFuturs().add(c);
+        return c; // <== A FAIRE
     }
     
     // Supprime un cours futur si aucun client n'est inscrit
@@ -163,8 +166,17 @@ public class Salle {
     }
     
     // Modifie un cours futur si aucun client n'est inscrit
+    // A verifier
     public boolean modifierCours(Cours cours, String activite, LocalDate date,LocalTime heure, TypeCours typeCours, int nombrePlaces) {
-        return false; // <== A FAIRE
+        if(cours.getNbreInscrits() == 0 ) {
+           cours.setActivite(activite);
+           cours.setDate(date) ;
+           cours.setHeure(heure)   ;
+           cours.setTypeCours(typeCours);
+           cours.setNombrePlaces(nombrePlaces);
+           return true;
+        }
+        return false;
     }
     
     // Retourne les cours d'une activité donnée
@@ -229,8 +241,19 @@ public class Salle {
     }
     
     // Retourne la liste des activités distinctes
-    public ArrayList<String> getListeActivites() {   // <== A FAIRE
-        return null;
+    // A verifier
+    public ArrayList<String> getListeActivites() { 
+        ArrayList<String> listeacrivite = null;
+        for (Cours c : listeCoursFuturs){
+            if (!listeacrivite.contains(c.getActivitecour())){
+                listeacrivite.add(c.getActivitecour());
+            }
+        for (Cours d : listeCoursPassees){
+            if (listeacrivite.contains(d.getActivitecour())){
+                listeacrivite.add(d.getActivitecour());
+            }
+        }
+        return listeacrivite;
     }
     
     //___________________Methodes de sauvegarde et de chargement________
@@ -271,16 +294,6 @@ public class Salle {
     
     }
     
-    public void DesactiverAbonnemment(){
-        boolean b = false;
-        //this.modifAbonnementDesactif(b);
-    }
-        
-    
-    
-    public void ReactiverAbonnemment(){
-        //this.modifAbonnementActif(true);
-    }
     
     
     // Affiche la liste des cours futurs
