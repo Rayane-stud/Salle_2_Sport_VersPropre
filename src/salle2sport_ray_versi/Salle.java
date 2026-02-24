@@ -21,6 +21,7 @@ public class Salle {
     private ArrayList<Cours> listeCoursFuturs;
     private ArrayList<Cours> listeCoursPassees;
     private String nomFichSauvegarde;
+    private int prochainIdCours = 0; // identifiant du prochains cours
     
     // Constructeur : 
     public Salle(String nom, Admin admin, String nomFichierSauvegarde) {
@@ -78,7 +79,13 @@ public class Salle {
     }
     
     // Inscrit un client à un cours
-    public boolean sInscrireACours(Client client, Cours cours) {  // <== AJOUTE UNE CONDITION PR VOIR SI LA DATE DU COURS EST PASSEE
+    // ajout de la verification de date faite
+    public boolean sInscrireACours(Client client, Cours cours) {
+      LocalDate aujourdHui = LocalDate.now();
+      if (client.getCoursFuturs().contains(cours)) {
+            return false;}
+      if (cours.getDatecour().isAfter(aujourdHui)){
+        
         if (!client.isAbonnementActif()) {
             return false;   // abonnement inactif
         }
@@ -87,13 +94,22 @@ public class Salle {
         }
         cours.ajouterClient(client);
         client.ajouterCoursFutur(cours);
-        return true;
+        return true;}
+      else{return false;
+      }
     }
     
     // Désinscrit un client d'un cours futur
-    public boolean seDesinscrireDeCours(Client client, Cours cours) { // <== A FAIRE
+    //A verifier
+    public boolean seDesinscrireDeCours(Client client, Cours cours) {
+    if (!client.getCoursFuturs().contains(cours)) {
         return false;
     }
+
+    cours.retirerClient(client);
+    client.retirerCoursFutur(cours);
+    return true;
+}
     
     //__________________Methodes Admin_______________________________________________________________________
     
@@ -153,6 +169,7 @@ public class Salle {
     public Cours creerCours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
         Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces);
         getCoursFuturs().add(c);
+        c.setIdCours(prochainIdCours++);
         return c; // <== A FAIRE
     }
     
@@ -243,16 +260,18 @@ public class Salle {
     // Retourne la liste des activités distinctes
     // A verifier
     public ArrayList<String> getListeActivites() { 
-        ArrayList<String> listeacrivite = null;
+        ArrayList<String> listeacrivite = new ArrayList<>();
         for (Cours c : listeCoursFuturs){
             if (!listeacrivite.contains(c.getActivitecour())){
                 listeacrivite.add(c.getActivitecour());
             }
+        }
         for (Cours d : listeCoursPassees){
             if (listeacrivite.contains(d.getActivitecour())){
                 listeacrivite.add(d.getActivitecour());
             }
         }
+        
         return listeacrivite;
     }
     
@@ -278,21 +297,15 @@ public class Salle {
     
 // Aaaaaaaaaaaaaaaaa1
 
-    public void ConsulterCompte(){
+    public void ConsulterCompte(Client c){
         for (Client client : listeClients){
-            if (client.getNom().equals(this.nom)){
+            if (client.getNom().equals(c.getNom())){
             client.afficherProfil();
             }
             }
         }
     
     
-    
-    
-    
-    public void RechercheCritère(){
-    
-    }
     
     
     
@@ -320,8 +333,32 @@ public class Salle {
         }
     }
     
+    //methode pour deplacer les cours du futur au passee
+    //a verifier
+    public void miseAJourCours() {
+        
+    LocalDate aujourdHui = LocalDate.now();
+    ArrayList<Cours> aDeplacer = new ArrayList<>();
+
+    for (Cours c : listeCoursFuturs) {
+        if (c.getDatecour().isBefore(aujourdHui)) {
+            aDeplacer.add(c);
+        }
+    }
+
+    for (Cours c : aDeplacer) {
+        listeCoursFuturs.remove(c);
+        listeCoursPassees.add(c);
+
+        for (Client cl : c.getClientsInscritscours()) {
+            cl.passerCoursEnPasse(c);
+        }
+    }
+}
     
     }
+
+
     
     
     
