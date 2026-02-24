@@ -4,6 +4,9 @@
  */
 package salle2sport_ray_versi;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -355,6 +358,134 @@ public class Salle {
         }
     }
 }
+    
+    //---------------------------METHODE DE SAUVEGARDE-------------
+    
+    
+    
+    //Methode de sauvegarde de fichier client dans un fichier txt
+    public void sauvegarderClients() {
+    try {
+        FileWriter writer = new FileWriter("clients.txt");
+
+        for (Client c : listeClients) {
+
+            writer.write(
+                c.getNumeroClient() + ";" +
+                c.getIdentifiant() + ";" +
+                c.getMot2Passe() + ";" +
+                c.getNom() + ";" +
+                c.getPrenom() + ";" +
+                c.getTelephone() + ";" +
+                c.getAdresse() + ";" +
+                c.getTypeAbonnement() + ";" +
+                c.isAbonnementActif() + "\n"
+            );
+
+        }
+
+        writer.close();
+
+    } catch (Exception e) {
+        System.out.println("Erreur sauvegarde clients");
+    }
+}
+    
+     //Methode de chargement de fichier client dans un fichier txt
+    public void chargerClients() {
+    try {
+
+        File fichier = new File("clients.txt");
+        Scanner scanner = new Scanner(fichier);
+
+        while (scanner.hasNextLine()) {
+
+            String ligne = scanner.nextLine();
+            String[] parts = ligne.split(";");
+
+            Client c = new Client(
+                parts[1],
+                parts[2],
+                parts[3],
+                parts[4],
+                parts[5],
+                parts[6],
+                TypeAbonnement.valueOf(parts[7])
+            );
+
+            c.setNumClient(Integer.parseInt(parts[0]));
+            c.modifAbonnementActif(Boolean.parseBoolean(parts[8]));
+
+            listeClients.add(c);
+        }
+
+        scanner.close();
+
+    } catch (Exception e) {
+        System.out.println("Erreur chargement clients");
+    }
+}
+    
+     //Methode de sauvegarde de cours client dans un fichier txt
+    public void sauvegarderCours() {
+    try {
+
+        FileWriter writer = new FileWriter("cours.txt");
+
+        for (Cours c : listeCoursFuturs) {
+
+            writer.write(
+                c.getIdCours() + ";" +
+                c.getActivitecour() + ";" +
+                c.getDatecour() + ";" +
+                c.getHeurecour() + ";" +
+                c.getTypeCours() + ";" +
+                c.getNombrePlacescour() + "\n"
+            );
+
+        }
+
+        writer.close();
+
+    } catch (Exception e) {
+        System.out.println("Erreur sauvegarde cours");
+    }
+}
+    
+    
+    
+     //Methode de chargement de cours client dans un fichier txt
+    public void chargerCours() {
+    try {
+
+        File fichier = new File("cours.txt");
+        Scanner scanner = new Scanner(fichier);
+
+        while (scanner.hasNextLine()) {
+
+            String ligne = scanner.nextLine();
+            String[] parts = ligne.split(";");
+
+            Cours c = new Cours(
+                parts[1],
+                LocalDate.parse(parts[2]),
+                LocalTime.parse(parts[3]),
+                TypeCours.valueOf(parts[4]),
+                Integer.parseInt(parts[5])
+            );
+
+            c.setIdCours(Integer.parseInt(parts[0]));
+            listeCoursFuturs.add(c);
+        }
+
+        scanner.close();
+
+    } catch (Exception e) {
+        System.out.println("Erreur chargement cours");
+    }
+}
+    
+    
     
     }
 
