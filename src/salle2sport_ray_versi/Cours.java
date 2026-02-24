@@ -109,8 +109,10 @@ public class Cours implements Comparable<Cours> {
 
     // Ajoute un client à la liste des inscrits
     public void ajouterClient(Client client) {
+    if (!listeInscrits.contains(client) && placesDisponibles()) {
         listeInscrits.add(client);
     }
+}
 
     // Retire un client de la liste des inscrits
     public void retirerClient(Client client) {
