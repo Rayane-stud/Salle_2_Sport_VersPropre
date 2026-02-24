@@ -99,12 +99,7 @@ public class Client extends Utilisateur{
     public void modifAbonnementActif(boolean actif) {
         this.abonnementActif = actif;
     }
-    
-    public void modifAbonnementDesactif(boolean inactif) {  
-        this.abonnementActif = inactif;
-    }
 
-    
     public void setNumClient(int num){
         this.numClient = num;
     }
