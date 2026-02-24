@@ -20,6 +20,11 @@ public class Cours {
     // Liste des clients inscrits à ce cours
     private ArrayList<Client> listeClientsInscrits = new ArrayList<>();
     
+    // Listes Cours
+    public ArrayList<Cours> listeCoursFuturs;
+    private ArrayList<Cours> listeCoursPasses;
+
+    
     // COnstructeur Cours
     public Cours(int id, String activite, String dateHeure, String typeCours, int nombreDePlaces){
         this.activite = activite;
@@ -30,4 +35,12 @@ public class Cours {
         
         
     }
-}
+    
+    public int generernum(){
+    
+        return 0;
+    
+    }
+
+    
+    }

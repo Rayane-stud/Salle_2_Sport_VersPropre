@@ -5,6 +5,8 @@
 package salledesport;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+
 
 /**
  *
@@ -31,7 +33,7 @@ public class Admin extends Utilisateur {
     
     
     public Cours creerUnCoursFutur() {
-        int id = 0,c;
+        int id = generernum(),c;
         String activite;
         String dateHeure;
         String typeCours = "collectif"; // indiv/collectif
@@ -74,6 +76,10 @@ public class Admin extends Utilisateur {
     public void verifierCoursMoinsPopulaires() {}
     public void sauvegarder() {}
     public void charger() {}
+
+    private int generernum() {
+         return generernum();
+    }
     
     
 }
