@@ -171,8 +171,8 @@ public class Salle {
     // A verifier
     public Cours creerCours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
         Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces,prochainIdCours);
+        prochainIdCours++;
         getCoursFuturs().add(c);
-        c.setIdCours(prochainIdCours++);
         return c;
     }
     
@@ -270,7 +270,7 @@ public class Salle {
             }
         }
         for (Cours d : listeCoursPassees){
-            if (listeacrivite.contains(d.getActivitecour())){
+            if (!listeacrivite.contains(d.getActivitecour())){
                 listeacrivite.add(d.getActivitecour());
             }
         }
@@ -394,7 +394,8 @@ public class Salle {
      //Methode de chargement de fichier client dans un fichier txt
     public void chargerClients() {
     try {
-
+        listeClients.clear();
+        
         File fichier = new File("clients.txt");
         Scanner scanner = new Scanner(fichier);
 
@@ -457,7 +458,8 @@ public class Salle {
      //Methode de chargement de cours client dans un fichier txt
     public void chargerCours() {
     try {
-
+        
+        listeCoursFuturs.clear();
         File fichier = new File("cours.txt");
         Scanner scanner = new Scanner(fichier);
 
@@ -466,15 +468,15 @@ public class Salle {
             String ligne = scanner.nextLine();
             String[] parts = ligne.split(";");
 
-            Cours c = new Cours(
-                parts[1],
-                LocalDate.parse(parts[2]),
-                LocalTime.parse(parts[3]),
-                TypeCours.valueOf(parts[4]),
-                Integer.parseInt(parts[5])
-            );
+            int id = Integer.parseInt(parts[0]);
+            String activite = parts[1];
+            LocalDate date = LocalDate.parse(parts[2]);
+            LocalTime heure = LocalTime.parse(parts[3]);
+            TypeCours type = TypeCours.valueOf(parts[4]);
+            int places = Integer.parseInt(parts[5]);
 
-            c.setIdCours(Integer.parseInt(parts[0]));
+            Cours c = new Cours(activite, date, heure, type, places, id);
+
             listeCoursFuturs.add(c);
         }
 
@@ -484,6 +486,19 @@ public class Salle {
         System.out.println("Erreur chargement cours");
     }
 }
+    
+    public void sauvegarderTout() {
+        sauvegarderClients();
+        sauvegarderCours();
+}
+
+    public void chargerTout() {
+        chargerClients();
+        chargerCours();
+}
+    // au démarage salle.chargerTout();
+    // avant la fermeture salle.sauvegarderTout();
+    
     
     
     
