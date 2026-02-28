@@ -479,6 +479,8 @@ public class Salle {
             Cours c = new Cours(activite, date, heure, type, places, id);
 
             listeCoursFuturs.add(c);
+            if (id >= prochainIdCours) {
+                prochainIdCours = id + 1;}
         }
 
         scanner.close();
