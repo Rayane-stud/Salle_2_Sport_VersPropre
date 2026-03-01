@@ -10,5 +10,9 @@ package salle2sport_ray_versi;
  * @author rayan
  */
 public enum TypeCours {
+    CARDIO,
+    MUSCULATION,
+    YOGA,
+    CROSSFIT
     
 }

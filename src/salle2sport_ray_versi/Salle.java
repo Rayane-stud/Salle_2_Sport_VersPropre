@@ -339,7 +339,7 @@ public class Salle {
     
     //methode pour deplacer les cours du futur au passee
     //a verifier
-    public void miseAJourCours() {
+    private void miseAJourCours() {
         
     LocalDate aujourdHui = LocalDate.now();
     ArrayList<Cours> aDeplacer = new ArrayList<>();
