@@ -14,35 +14,61 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- *
+ * Classe centrale de l'application représentant la salle de sport.
+ * Joue le rôle de contrôleur : orchestre toutes les interactions entre
+ * les clients, l'administrateur, les cours et les fichiers de sauvegarde.
+ * 
+ * Responsabilités :
+ *  - Création et gestion des comptes clients
+ *  - Gestion des inscriptions et désinscriptions aux cours
+ *  - Fonctionnalités administrateur (recherche, activation/désactivation, gestion des cours)
+ *  - Sauvegarde et chargement des données via fichiers texte (.txt)
+ *  - Mise à jour automatique des listes de cours (futurs → passés)
+ * 
  * @author rayan
  */
 public class Salle {
-    // Attributs __________________________________________
-    private String nom;
-    private ArrayList<Client> listeClients;
-    private Admin admin; // Car il n'y a qu'un admin, ca aurait été une liste sinon
-    private ArrayList<Cours> listeCoursFuturs;
-    private ArrayList<Cours> listeCoursPassees;
-    private String nomFichSauvegarde;
-    private int prochainIdCours = 1; // identifiant du prochains cours
     
-    // Constructeur : 
+    // _________________________________________________ Attributs :
+    private String nom;                           // Nom de la salle de sport
+    private ArrayList<Client> listeClients;       // Liste de tous les clients enregistrés
+    private Admin admin;                          // Unique administrateur (une liste si plusieurs admins à l'avenir)
+    private ArrayList<Cours> listeCoursFuturs;    // Cours à venir, non encore passés
+    private ArrayList<Cours> listeCoursPassees;   // Cours dont la date est dépassée
+    private String nomFichSauvegarde;             // Nom du fichier de sauvegarde général (non utilisé directement pour l'instant)
+    private int prochainIdCours = 1;              // Compteur pour générer des identifiants de cours uniques et croissants
+    
+    /**
+     * Constructeur de la classe Salle.
+     * Initialise la salle avec un nom, un admin et les listes vides.
+     * Les données réelles sont chargées ensuite via chargerTout().
+     * 
+     * @param nom                   Nom de la salle
+     * @param admin                 Administrateur de la salle
+     * @param nomFichierSauvegarde  Nom du fichier de sauvegarde général
+     */
     public Salle(String nom, Admin admin, String nomFichierSauvegarde) {
         this.nom = nom;
         this.admin = admin;
         this.nomFichSauvegarde = nomFichierSauvegarde;
         this.listeClients = new ArrayList<>();
-        this.listeCoursFuturs = new ArrayList<>();   // Simple initialisation des listes pour l'instant
-        this.listeCoursPassees = new ArrayList<>();  // elle se rempliront via Charger puis au fur et a mesure 
+        this.listeCoursFuturs = new ArrayList<>();  // initialisées vides : se rempliront via chargerTout()
+        this.listeCoursPassees = new ArrayList<>();
     }
     
-    //___________________________________________________________Methodes : 
     
-    //__________________Methodes clients_______________________________________
-    // __Partie 1 : ( Pour console et interface graphique )__
+    // _________________________________________________ Méthodes Clients :
     
-    // Vérifie si l'email est déjà utilisé
+    // __ Partie 1 : gestion des comptes (console + interface graphique) __
+    
+    /**
+     * Vérifie si un identifiant (email) est déjà utilisé par un client existant.
+     * Utilisée dans creerCompte() pour éviter les doublons d'adresse email.
+     * Méthode privée car uniquement utilisée en interne.
+     * 
+     * @param identifiant l'email à vérifier
+     * @return true si l'email est déjà associé à un compte
+     */
     private boolean idDejaUtilise(String identifiant) {
         for (Client c : listeClients) {
             if (c.getIdentifiant().equals(identifiant)) {
@@ -52,77 +78,147 @@ public class Salle {
         return false;
     }
     
-    // Generation de num client unique
+    /**
+     * Génère un numéro client unique en prenant le maximum existant + 1.
+     * Garantit l'unicité tant qu'il n'y a pas de suppression de compte.
+     * On pourrait enrichir ce numéro avec la date/heure de création pour plus de traçabilité.
+     * 
+     * @return le prochain numéro client disponible
+     */
     private int genererNumeroClient() {
         int max = 0;
-        for (Client c : listeClients) {      // methode de parcour de arraylist for each, c parcourera tt les elements 
-            if (c.getNumeroClient() > max) {  // Comme on a pas de suppression a faire, pas besoin d'itérateur
+        for (Client c : listeClients) {     // parcours for-each : pas besoin d'itérateur ici
+            if (c.getNumeroClient() > max) { // car on ne modifie pas la liste pendant le parcours
                 max = c.getNumeroClient();
             }
         }
-        return max + 1; // On pourrait enrichir le numero client avec une premiere partie qui correspondrait a la date et heure pui max + 1 pour l'unicité 
+        return max + 1;
     }
     
-    // Création  compte client et ajout a la liste
-    public Client creerCompte(String email, String mdp, String nom, String prenom, String tel, String adresse, TypeAbonnement type) {
+    /**
+     * Crée un nouveau compte client et l'ajoute à la liste des clients.
+     * Vérifie au préalable que l'email n'est pas déjà utilisé.
+     * L'interface graphique gérera l'affichage du message d'erreur si null est retourné.
+     * 
+     * @param email    Adresse email (identifiant unique)
+     * @param mdp      Mot de passe
+     * @param nom      Nom de famille
+     * @param prenom   Prénom
+     * @param tel      Numéro de téléphone
+     * @param adresse  Adresse postale
+     * @param type     Type d'abonnement choisi
+     * @return le Client créé, ou null si l'email est déjà utilisé
+     */
+    public Client creerCompte(String email, String mdp, String nom, String prenom,
+                              String tel, String adresse, TypeAbonnement type) {
         if (idDejaUtilise(email)) {
-            return null;    // l'interface gèrera le message d'erreur
+            return null; // l'interface gérera le message d'erreur
         }
         Client nouveau = new Client(email, mdp, nom, prenom, tel, adresse, type);
-        nouveau.setNumClient(genererNumeroClient());
+        nouveau.setNumClient(genererNumeroClient()); // attribution du numéro unique
         listeClients.add(nouveau);
-        return nouveau;     // retourne le client créé, null si échec
+        return nouveau; // retourne le client créé, ou null si échec
     }
 
-    // Maj des info du compte
-    public void miseAJourInformationsCompte(Client client, String nom, String prenom,String tel, String adresse) {
+    /**
+     * Met à jour les informations personnelles d'un client.
+     * Délègue chaque modification aux modifieurs de la classe Client.
+     * 
+     * @param client  le client à modifier
+     * @param nom     nouveau nom
+     * @param prenom  nouveau prénom
+     * @param tel     nouveau téléphone
+     * @param adresse nouvelle adresse
+     */
+    public void miseAJourInformationsCompte(Client client, String nom, String prenom,
+                                            String tel, String adresse) {
         client.modifNom(nom);
         client.modifPrenom(prenom);
         client.modifTelephone(tel);
         client.modifAdresse(adresse);
     }
     
-    // Inscrit un client à un cours
-    // ajout de la verification de date faite
+    /**
+     * Inscrit un client à un cours futur.
+     * Effectue plusieurs vérifications avant de procéder :
+     *  - le client n'est pas déjà inscrit à ce cours
+     *  - le cours est bien dans le futur (date postérieure à aujourd'hui)
+     *  - l'abonnement du client est actif
+     *  - le cours n'est pas complet
+     * 
+     * @param client le client qui souhaite s'inscrire
+     * @param cours  le cours visé
+     * @return true si l'inscription a réussi, false sinon
+     */
     public boolean sInscrireACours(Client client, Cours cours) {
-      LocalDate aujourdHui = LocalDate.now();
-      if (client.getCoursFuturs().contains(cours)) {
-            return false;}
-      if (cours.getDatecour().isAfter(aujourdHui)){
+        LocalDate aujourdHui = LocalDate.now();
         
-        if (!client.isAbonnementActif()) {
-            return false;   // abonnement inactif
+        // Vérifie que le client n'est pas déjà inscrit
+        if (client.getCoursFuturs().contains(cours)) {
+            return false;
         }
-        if (!cours.placesDisponibles()) {
-            return false;   // cours complet
+        
+        // Vérifie que le cours est bien dans le futur
+        if (cours.getDatecour().isAfter(aujourdHui)) {
+            
+            if (!client.isAbonnementActif()) {
+                return false; // abonnement inactif
+            }
+            if (!cours.placesDisponibles()) {
+                return false; // cours complet
+            }
+            
+            // Inscription effective : mise à jour des deux côtés (cours et client)
+            cours.ajouterClient(client);
+            client.ajouterCoursFutur(cours);
+            return true;
         }
-        cours.ajouterClient(client);
-        client.ajouterCoursFutur(cours);
-        return true;}
-      else{return false;
-      }
+        
+        return false; // cours déjà passé
     }
     
-    // Désinscrit un client d'un cours futur
-    //A verifier
+    /**
+     * Désinscrit un client d'un cours futur.
+     * Vérifie que le client est bien inscrit avant de procéder.
+     * Met à jour la liste du cours et celle du client.
+     * 
+     * @param client le client qui souhaite se désinscrire
+     * @param cours  le cours concerné
+     * @return true si la désinscription a réussi, false si le client n'était pas inscrit
+     */
     public boolean seDesinscrireDeCours(Client client, Cours cours) {
-    if (!client.getCoursFuturs().contains(cours)) {
-        return false;
+        if (!client.getCoursFuturs().contains(cours)) {
+            return false; // le client n'est pas inscrit à ce cours
+        }
+        
+        // Mise à jour des deux côtés (cours et client)
+        cours.retirerClient(client);
+        client.retirerCoursFutur(cours);
+        return true;
     }
-
-    cours.retirerClient(client);
-    client.retirerCoursFutur(cours);
-    return true;
-}
     
-    //__________________Methodes Admin_______________________________________________________________________
     
+    // _________________________________________________ Méthodes Administrateur :
+    
+    /**
+     * Retourne la liste complète des clients de la salle.
+     * Utilisée par l'admin pour consulter tous les comptes.
+     * 
+     * @return la liste de tous les clients
+     */
     public ArrayList<Client> getListeClients() {
         return listeClients;
     }
     
-    
-    // Recherche un client selon un critère
+    /**
+     * Recherche des clients selon un critère et une valeur donnés.
+     * Critères acceptés : "nom", "prenom", "telephone", "numero", "abonnement".
+     * La comparaison est insensible à la casse pour les champs texte.
+     * 
+     * @param critere le champ sur lequel filtrer (ex : "nom")
+     * @param valeur  la valeur recherchée (ex : "Dupont")
+     * @return la liste des clients correspondant au critère, vide si aucun résultat
+     */
     public ArrayList<Client> rechercherClient(String critere, String valeur) {
         ArrayList<Client> resultats = new ArrayList<>();
         for (Client c : listeClients) {
@@ -144,6 +240,7 @@ public class Salle {
                         resultats.add(c);
                 }
                 case "abonnement" -> {
+                    // comparaison entre la valeur de l'enum en String et la valeur recherchée
                     if (c.getTypeAbonnement().toString().equalsIgnoreCase(valeur))
                         resultats.add(c);
                 }
@@ -152,362 +249,464 @@ public class Salle {
         return resultats;
     }
     
-    // Désactive l'abonnement d'un client
+    /**
+     * Désactive l'abonnement d'un client.
+     * Un client avec un abonnement inactif ne peut plus se connecter ni s'inscrire à des cours.
+     * 
+     * @param client le client à désactiver
+     */
     public void desactiverAbonnement(Client client) {
         client.modifAbonnementActif(false);
     }
     
-    // Réactive l'abonnement d'un client
+    /**
+     * Réactive l'abonnement d'un client précédemment désactivé.
+     * 
+     * @param client le client à réactiver
+     */
     public void reactiverAbonnement(Client client) {
         client.modifAbonnementActif(true);
     }
     
-                                                    // Gestion des cours :
-    // Retourne tous les cours passés
+    
+    // _________________ Gestion des cours (admin) :
+    
+    /**
+     * Retourne la liste des cours passés.
+     * 
+     * @return la liste de tous les cours dont la date est dépassée
+     */
     public ArrayList<Cours> getListeCoursPassees() {
         return listeCoursPassees;
     }
     
-    // Crée un cours et l'ajoute à la liste des cours futurs
-    // A verifier
-    public Cours creerCours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces) {
-        Cours c = new Cours(activite,date,heure,typeCours,nombrePlaces,prochainIdCours);
-        prochainIdCours++;
+    /**
+     * Crée un nouveau cours et l'ajoute à la liste des cours futurs.
+     * L'identifiant du cours est attribué automatiquement via prochainIdCours,
+     * qui est incrémenté à chaque création pour garantir l'unicité.
+     * 
+     * @param activite     Nom de l'activité
+     * @param date         Date du cours
+     * @param heure        Heure de début
+     * @param typeCours    Type de cours
+     * @param nombrePlaces Nombre de places disponibles
+     * @return le cours nouvellement créé
+     */
+    public Cours creerCours(String activite, LocalDate date, LocalTime heure,
+                            TypeCours typeCours, int nombrePlaces) {
+        Cours c = new Cours(activite, date, heure, typeCours, nombrePlaces, prochainIdCours);
+        prochainIdCours++; // incrémentation pour le prochain cours
         getCoursFuturs().add(c);
         return c;
     }
     
-    // Supprime un cours futur si aucun client n'est inscrit
+    /**
+     * Supprime un cours futur, uniquement si aucun client n'est inscrit.
+     * Si des clients sont inscrits, la suppression est refusée pour préserver les données.
+     * 
+     * @param cours le cours à supprimer
+     * @return true si la suppression a réussi, false si des clients sont inscrits
+     */
     public boolean supprimerCours(Cours cours) {
         if (!cours.aucunInscrit()) {
-            return false;   // impossible, des clients sont inscrits
+            return false; // impossible : des clients sont inscrits
         }
         listeCoursFuturs.remove(cours);
         return true;
     }
     
-    // Modifie un cours futur si aucun client n'est inscrit
-    // A verifier
-    public boolean modifierCours(Cours cours, String activite, LocalDate date,LocalTime heure, TypeCours typeCours, int nombrePlaces) {
-        if(cours.getNbreInscrits() == 0 ) {
-           cours.setActivite(activite);
-           cours.setDate(date) ;
-           cours.setHeure(heure)   ;
-           cours.setTypeCours(typeCours);
-           cours.setNombrePlaces(nombrePlaces);
-           return true;
+    /**
+     * Modifie un cours futur, uniquement si aucun client n'y est inscrit.
+     * Si des clients sont déjà inscrits, la modification est refusée
+     * pour ne pas les affecter sans leur consentement.
+     * 
+     * @param cours        le cours à modifier
+     * @param activite     nouveau nom d'activité
+     * @param date         nouvelle date
+     * @param heure        nouvelle heure
+     * @param typeCours    nouveau type
+     * @param nombrePlaces nouveau nombre de places
+     * @return true si la modification a réussi, false si des clients sont inscrits
+     */
+    public boolean modifierCours(Cours cours, String activite, LocalDate date,
+                                 LocalTime heure, TypeCours typeCours, int nombrePlaces) {
+        if (cours.getNbreInscrits() == 0) {
+            cours.setActivite(activite);
+            cours.setDate(date);
+            cours.setHeure(heure);
+            cours.setTypeCours(typeCours);
+            cours.setNombrePlaces(nombrePlaces);
+            return true;
         }
-        return false;
+        return false; // modification refusée : cours avec inscrits
     }
     
-    // Retourne les cours d'une activité donnée
+    /**
+     * Retourne la liste des cours futurs correspondant à une activité donnée.
+     * La comparaison est insensible à la casse (equalsIgnoreCase).
+     * 
+     * @param activite le nom de l'activité recherchée
+     * @return la liste des cours de cette activité
+     */
     public ArrayList<Cours> getCoursParActivite(String activite) {
         ArrayList<Cours> resultats = new ArrayList<>();
-        for (Cours c : listeCoursFuturs) {  // parcours for each 
-            if (c.getActivitecour().equalsIgnoreCase(activite)) { // Ignorecase compare sans tenir compte des majuscules et minuscules
+        for (Cours c : listeCoursFuturs) { // parcours for-each
+            if (c.getActivitecour().equalsIgnoreCase(activite)) {
                 resultats.add(c);
             }
         }
         return resultats;
     }
     
-    // Plus populaires
+    /**
+     * Retourne les cours futurs triés du plus populaire au moins populaire.
+     * Utilise Collections.sort() qui appelle automatiquement compareTo()
+     * défini dans la classe Cours (tri décroissant par nombre d'inscrits).
+     * Travaille sur un clone de la liste pour ne pas modifier l'ordre original.
+     * 
+     * @return une nouvelle liste triée du plus au moins populaire
+     */
     public ArrayList<Cours> getCoursPlusPopulaires() {
-        ArrayList<Cours> trie = new ArrayList<>(listeCoursFuturs); // clone de la liste pour ne pas la modifier
-        Collections.sort(trie);    // utilise automatiquement le compareTo() modifier dans la classse cours ou l'interface comparable a ete implementée
+        ArrayList<Cours> trie = new ArrayList<>(listeCoursFuturs); // clone pour ne pas modifier la liste originale
+        Collections.sort(trie); // utilise compareTo() défini dans Cours
         return trie;
     }
 
-    
-    // Moins populaires
+    /**
+     * Retourne les cours futurs triés du moins populaire au plus populaire.
+     * Applique un tri croissant en inversant le résultat de getCoursPlusPopulaires().
+     * 
+     * @return une nouvelle liste triée du moins au plus populaire
+     */
     public ArrayList<Cours> getCoursMoinsPopulaires() {
         ArrayList<Cours> trie = new ArrayList<>(listeCoursFuturs);
         Collections.sort(trie);
-        Collections.reverse(trie); // inverse  le résultat
+        Collections.reverse(trie); // inverse le résultat du tri décroissant
         return trie;
     }
     
     
+    // _________________________________________________ Méthodes communes (client + admin) :
     
-    //__________________Methodes communes_______________________
-    // connexion : la meme methode est appliquée aux client et admin car il n'y a qu'un admin simplifiant le cas
+    /**
+     * Gère la connexion d'un utilisateur (client ou admin).
+     * Vérifie d'abord si les identifiants correspondent à l'admin,
+     * puis parcourt la liste des clients.
+     * Un client avec un abonnement inactif ne peut pas se connecter.
+     * L'interface graphique gérera les messages d'erreur selon le cas de retour null.
+     * 
+     * @param identifiant l'email de l'utilisateur
+     * @param motDePasse  le mot de passe
+     * @return l'objet Utilisateur connecté (Admin ou Client), ou null si échec
+     */
     public Utilisateur seConnecter(String identifiant, String motDePasse) {
+        // Vérification admin en priorité
         if (admin.getIdentifiant().equals(identifiant) && admin.getMot2Passe().equals(motDePasse)) {
             return admin;
         }
+        
+        // Parcours des clients
         for (Client c : listeClients) {
-            if (c.getIdentifiant().equals(identifiant) &&
-                c.getMot2Passe().equals(motDePasse)) {
+            if (c.getIdentifiant().equals(identifiant) && c.getMot2Passe().equals(motDePasse)) {
                 if (!c.isAbonnementActif()) {
-                    return null;    // l'interface gerera le message
+                    return null; // abonnement inactif : connexion refusée, l'interface gérera le message
                 }
                 return c;
             }
         }
-        return null; // client n'existe pas 
+        return null; // aucun utilisateur trouvé avec ces identifiants
     }
     
-    // Mis a jour du mdp 
+    /**
+     * Met à jour le mot de passe d'un utilisateur après vérification de l'ancien.
+     * Fonctionne pour les clients comme pour l'admin (polymorphisme via Utilisateur).
+     * 
+     * @param utilisateur l'utilisateur qui souhaite changer son mot de passe
+     * @param ancienMdp   l'ancien mot de passe (vérification de sécurité)
+     * @param nouveauMdp  le nouveau mot de passe souhaité
+     * @return true si le changement a réussi, false si l'ancien mot de passe est incorrect
+     */
     public boolean miseAJourMotDePasse(Utilisateur utilisateur, String ancienMdp, String nouveauMdp) {
         if (!utilisateur.getMot2Passe().equals(ancienMdp)) {
-            return false;   // l'interface gerera le message d'erreur
+            return false; // l'interface gérera le message d'erreur
         }
         utilisateur.setMot2passe(nouveauMdp);
         return true;
     }
     
-    // Retourne la liste des cours futurs
+    /**
+     * Retourne la liste des cours futurs.
+     * 
+     * @return la liste des cours à venir
+     */
     public ArrayList<Cours> getCoursFuturs() {
         return listeCoursFuturs;
     }
     
-    // Retourne la liste des activités distinctes
-    // A verifier
-    public ArrayList<String> getListeActivites() { 
-        ArrayList<String> listeacrivite = new ArrayList<>();
-        for (Cours c : listeCoursFuturs){
-            if (!listeacrivite.contains(c.getActivitecour())){
-                listeacrivite.add(c.getActivitecour());
-            }
-        }
-        for (Cours d : listeCoursPassees){
-            if (!listeacrivite.contains(d.getActivitecour())){
-                listeacrivite.add(d.getActivitecour());
-            }
-        }
+    /**
+     * Retourne la liste de toutes les activités distinctes proposées dans la salle.
+     * Parcourt à la fois les cours futurs et passés pour être exhaustif.
+     * Evite les doublons grâce au test contains() avant chaque ajout.
+     * 
+     * @return la liste des noms d'activités sans doublon
+     */
+    public ArrayList<String> getListeActivites() {
+        ArrayList<String> listeActivite = new ArrayList<>();
         
-        return listeacrivite;
-    }
-    
-    //___________________Methodes de sauvegarde et de chargement________
-    
-    // Utilisation de plusieurs fichier txt ( 1 par classe je pense ) 
-    
-    //une methode pour sauvegarder
-    // une methode pour charger
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-// Aaaaaaaaaaaaaaaaa1
-
-    public void ConsulterCompte(Client c){
-        for (Client client : listeClients){
-            if (client.getNom().equals(c.getNom())){
-            client.afficherProfil();
-            }
-            }
-        }
-    
-    
-    
-    
-    
-    // Affiche la liste des cours futurs
-    public void ConsulterListeCoursFuturs() {
-        System.out.println("_____ Les cours à venir _____");
-        if (listeCoursFuturs.isEmpty()) {
-            System.out.println("Aucun cours à venir."); // <== A modif pr passage au graphique
-        } else {
-            for (Cours c : listeCoursFuturs) { // methode for each de parcours de liste 
-                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour()  + " à " + c.getHeurecour()); // <== a Modif pr la partie graphique
-            }
-        }
-    }
-
-    // Affiche la liste de ses cours passés
-    public void ConsulterListeCoursPasses() {
-        System.out.println("______ Les cours passes ______");
-        if (listeCoursPassees.isEmpty()) {
-            System.out.println("Aucun cours passer."); // <== A modifier quand on passera en graphique
-        } else {
-            for (Cours c : listeCoursPassees) {
-                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() + " à " + c.getHeurecour()); // <== A modif pr graphique
-            }
-        }
-    }
-    
-    //methode pour deplacer les cours du futur au passee
-    //a verifier
-    private void miseAJourCours() {
-        
-    LocalDate aujourdHui = LocalDate.now();
-    ArrayList<Cours> aDeplacer = new ArrayList<>();
-
-    for (Cours c : listeCoursFuturs) {
-        if (c.getDatecour().isBefore(aujourdHui)) {
-            aDeplacer.add(c);
-        }
-    }
-
-    for (Cours c : aDeplacer) {
-        listeCoursFuturs.remove(c);
-        listeCoursPassees.add(c);
-
-        for (Client cl : c.getClientsInscritscours()) {
-            cl.passerCoursEnPasse(c);
-        }
-    }
-}
-    
-    //---------------------------METHODE DE SAUVEGARDE-------------
-    
-    
-    
-    //Methode de sauvegarde de fichier client dans un fichier txt
-    public void sauvegarderClients() {
-    try {
-        FileWriter writer = new FileWriter("clients.txt");
-
-        for (Client c : listeClients) {
-
-            writer.write(
-                c.getNumeroClient() + ";" +
-                c.getIdentifiant() + ";" +
-                c.getMot2Passe() + ";" +
-                c.getNom() + ";" +
-                c.getPrenom() + ";" +
-                c.getTelephone() + ";" +
-                c.getAdresse() + ";" +
-                c.getTypeAbonnement() + ";" +
-                c.isAbonnementActif() + "\n"
-            );
-
-        }
-
-        writer.close();
-
-    } catch (Exception e) {
-        System.out.println("Erreur sauvegarde clients");
-    }
-}
-    
-     //Methode de chargement de fichier client dans un fichier txt
-    public void chargerClients() {
-    try {
-        listeClients.clear();
-        
-        File fichier = new File("clients.txt");
-        Scanner scanner = new Scanner(fichier);
-
-        while (scanner.hasNextLine()) {
-
-            String ligne = scanner.nextLine();
-            String[] parts = ligne.split(";");
-
-            Client c = new Client(
-                parts[1],
-                parts[2],
-                parts[3],
-                parts[4],
-                parts[5],
-                parts[6],
-                TypeAbonnement.valueOf(parts[7])
-            );
-
-            c.setNumClient(Integer.parseInt(parts[0]));
-            c.modifAbonnementActif(Boolean.parseBoolean(parts[8]));
-
-            listeClients.add(c);
-        }
-
-        scanner.close();
-
-    } catch (Exception e) {
-        System.out.println("Erreur chargement clients");
-    }
-}
-    
-     //Methode de sauvegarde de cours client dans un fichier txt
-    public void sauvegarderCours() {
-    try {
-
-        FileWriter writer = new FileWriter("cours.txt");
-
+        // Parcours des cours futurs
         for (Cours c : listeCoursFuturs) {
-
-            writer.write(
-                c.getIdCours() + ";" +
-                c.getActivitecour() + ";" +
-                c.getDatecour() + ";" +
-                c.getHeurecour() + ";" +
-                c.getTypeCours() + ";" +
-                c.getNombrePlacescour() + "\n"
-            );
-
+            if (!listeActivite.contains(c.getActivitecour())) {
+                listeActivite.add(c.getActivitecour());
+            }
         }
-
-        writer.close();
-
-    } catch (Exception e) {
-        System.out.println("Erreur sauvegarde cours");
-    }
-}
-    
-    
-    
-     //Methode de chargement de cours client dans un fichier txt
-    public void chargerCours() {
-    try {
         
-        listeCoursFuturs.clear();
-        File fichier = new File("cours.txt");
-        Scanner scanner = new Scanner(fichier);
-
-        while (scanner.hasNextLine()) {
-
-            String ligne = scanner.nextLine();
-            String[] parts = ligne.split(";");
-
-            int id = Integer.parseInt(parts[0]);
-            String activite = parts[1];
-            LocalDate date = LocalDate.parse(parts[2]);
-            LocalTime heure = LocalTime.parse(parts[3]);
-            TypeCours type = TypeCours.valueOf(parts[4]);
-            int places = Integer.parseInt(parts[5]);
-
-            Cours c = new Cours(activite, date, heure, type, places, id);
-
-            listeCoursFuturs.add(c);
-            if (id >= prochainIdCours) {
-                prochainIdCours = id + 1;}
+        // Parcours des cours passés (pour avoir un historique complet des activités)
+        for (Cours d : listeCoursPassees) {
+            if (!listeActivite.contains(d.getActivitecour())) {
+                listeActivite.add(d.getActivitecour());
+            }
         }
-
-        scanner.close();
-
-    } catch (Exception e) {
-        System.out.println("Erreur chargement cours");
+        
+        return listeActivite;
     }
-}
     
+    
+    // _________________________________________________ Sauvegarde et chargement :
+    // Uniquement via fichiers texte (.txt), conformément aux contraintes du projet.
+    // Pas de sérialisation, pas de JSON, pas de fichiers binaires.
+    // Appel recommandé : chargerTout() au démarrage, sauvegarderTout() avant fermeture.
+    
+    /**
+     * Sauvegarde tous les clients dans le fichier "clients.txt".
+     * Format CSV avec séparateur ";" : numClient;email;mdp;nom;prenom;tel;adresse;typeAbonnement;abonnementActif
+     * Un client par ligne.
+     */
+    public void sauvegarderClients() {
+        try {
+            FileWriter writer = new FileWriter("clients.txt");
+            
+            for (Client c : listeClients) {
+                writer.write(
+                    c.getNumeroClient() + ";" +
+                    c.getIdentifiant() + ";" +
+                    c.getMot2Passe() + ";" +
+                    c.getNom() + ";" +
+                    c.getPrenom() + ";" +
+                    c.getTelephone() + ";" +
+                    c.getAdresse() + ";" +
+                    c.getTypeAbonnement() + ";" +     // toString() de l'enum, compatible avec valueOf() au chargement
+                    c.isAbonnementActif() + "\n"
+                );
+            }
+            
+            writer.close();
+            
+        } catch (Exception e) {
+            System.out.println("Erreur sauvegarde clients");
+        }
+    }
+    
+    /**
+     * Charge les clients depuis le fichier "clients.txt".
+     * Reconstruit chaque objet Client à partir d'une ligne du fichier.
+     * Vide la liste actuelle avant de recharger pour éviter les doublons.
+     */
+    public void chargerClients() {
+        try {
+            listeClients.clear(); // réinitialisation avant rechargement
+            
+            File fichier = new File("clients.txt");
+            Scanner scanner = new Scanner(fichier);
+            
+            while (scanner.hasNextLine()) {
+                String ligne = scanner.nextLine();
+                String[] parts = ligne.split(";"); // découpage selon le séparateur ";"
+                
+                // Reconstruction du client à partir des champs de la ligne
+                Client c = new Client(
+                    parts[1], // email
+                    parts[2], // mot de passe
+                    parts[3], // nom
+                    parts[4], // prénom
+                    parts[5], // téléphone
+                    parts[6], // adresse
+                    TypeAbonnement.valueOf(parts[7]) // conversion String → enum
+                );
+                
+                c.setNumClient(Integer.parseInt(parts[0]));
+                c.modifAbonnementActif(Boolean.parseBoolean(parts[8]));
+                
+                listeClients.add(c);
+            }
+            
+            scanner.close();
+            
+        } catch (Exception e) {
+            System.out.println("Erreur chargement clients");
+        }
+    }
+    
+    /**
+     * Sauvegarde tous les cours futurs dans le fichier "cours.txt".
+     * Format CSV avec séparateur ";" : id;activite;date;heure;typeCours;nombrePlaces
+     * Un cours par ligne. Seuls les cours futurs sont sauvegardés.
+     */
+    public void sauvegarderCours() {
+        try {
+            FileWriter writer = new FileWriter("cours.txt");
+            
+            for (Cours c : listeCoursFuturs) {
+                writer.write(
+                    c.getIdCours() + ";" +
+                    c.getActivitecour() + ";" +
+                    c.getDatecour() + ";" +     // format ISO par défaut : yyyy-MM-dd
+                    c.getHeurecour() + ";" +    // format ISO par défaut : HH:mm
+                    c.getTypeCours() + ";" +    // toString() de l'enum, compatible avec valueOf() au chargement
+                    c.getNombrePlacescour() + "\n"
+                );
+            }
+            
+            writer.close();
+            
+        } catch (Exception e) {
+            System.out.println("Erreur sauvegarde cours");
+        }
+    }
+    
+    /**
+     * Charge les cours depuis le fichier "cours.txt".
+     * Reconstruit chaque objet Cours à partir d'une ligne du fichier.
+     * Met également à jour prochainIdCours pour éviter les conflits d'identifiants.
+     */
+    public void chargerCours() {
+        try {
+            listeCoursFuturs.clear(); // réinitialisation avant rechargement
+            
+            File fichier = new File("cours.txt");
+            Scanner scanner = new Scanner(fichier);
+            
+            while (scanner.hasNextLine()) {
+                String ligne = scanner.nextLine();
+                String[] parts = ligne.split(";"); // découpage selon le séparateur ";"
+                
+                // Reconstruction des champs du cours
+                int id = Integer.parseInt(parts[0]);
+                String activite = parts[1];
+                LocalDate date = LocalDate.parse(parts[2]);  // parsing du format ISO yyyy-MM-dd
+                LocalTime heure = LocalTime.parse(parts[3]); // parsing du format ISO HH:mm
+                TypeCours type = TypeCours.valueOf(parts[4]);
+                int places = Integer.parseInt(parts[5]);
+                
+                Cours c = new Cours(activite, date, heure, type, places, id);
+                listeCoursFuturs.add(c);
+                
+                // Mise à jour du compteur pour éviter les conflits d'ID lors des prochaines créations
+                if (id >= prochainIdCours) {
+                    prochainIdCours = id + 1;
+                }
+            }
+            
+            scanner.close();
+            
+        } catch (Exception e) {
+            System.out.println("Erreur chargement cours");
+        }
+    }
+    
+    /**
+     * Sauvegarde l'ensemble des données (clients + cours).
+     * À appeler avant la fermeture de l'application.
+     */
     public void sauvegarderTout() {
         sauvegarderClients();
         sauvegarderCours();
-}
+    }
 
+    /**
+     * Charge l'ensemble des données (clients + cours).
+     * À appeler au démarrage de l'application.
+     */
     public void chargerTout() {
         chargerClients();
         chargerCours();
-}
-    // au démarage salle.chargerTout();
-    // avant la fermeture salle.sauvegarderTout();
+    }
     
     
+    // _________________________________________________ Méthodes d'affichage (console) :
+    // A adapter pour l'interface graphique
     
+    /**
+     * Affiche le profil d'un client en le recherchant par nom.
+     * Méthode à adapter pour l'interface graphique. <== A modifier pour la partie graphique
+     * 
+     * @param c le client dont on souhaite consulter le profil
+     */
+    public void ConsulterCompte(Client c) {
+        for (Client client : listeClients) {
+            if (client.getNom().equals(c.getNom())) {
+                client.afficherProfil();
+            }
+        }
+    }
     
+    /**
+     * Affiche dans la console la liste complète des cours futurs de la salle.
+     * Méthode à adapter pour l'interface graphique. <== A modifier pour la partie graphique
+     */
+    public void ConsulterListeCoursFuturs() {
+        System.out.println("_____ Les cours à venir _____");
+        if (listeCoursFuturs.isEmpty()) {
+            System.out.println("Aucun cours à venir.");
+        } else {
+            for (Cours c : listeCoursFuturs) { // parcours for-each
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() + " à " + c.getHeurecour());
+            }
+        }
     }
 
-
+    /**
+     * Affiche dans la console la liste complète des cours passés de la salle.
+     * Méthode à adapter pour l'interface graphique. <== A modifier pour la partie graphique
+     */
+    public void ConsulterListeCoursPasses() {
+        System.out.println("______ Les cours passés ______");
+        if (listeCoursPassees.isEmpty()) {
+            System.out.println("Aucun cours passé.");
+        } else {
+            for (Cours c : listeCoursPassees) {
+                System.out.println("- " + c.getActivitecour() + " le " + c.getDatecour() + " à " + c.getHeurecour());
+            }
+        }
+    }
     
-    
-    
+    /**
+     * Déplace les cours passés de listeCoursFuturs vers listeCoursPassees.
+     * Mise à jour symétrique : déplace également les cours dans les listes de chaque client inscrit.
+     * Méthode privée, appelée automatiquement au démarrage ou à une périodicité à définir.
+     * 
+     * Utilise une liste intermédiaire (aDeplacer) pour éviter les ConcurrentModificationException
+     * lors de la modification d'une liste pendant son parcours.
+     */
+    private void miseAJourCours() {
+        LocalDate aujourdHui = LocalDate.now();
+        ArrayList<Cours> aDeplacer = new ArrayList<>(); // liste tampon pour éviter les problèmes de modification pendant le parcours
+        
+        // Identification des cours dont la date est passée
+        for (Cours c : listeCoursFuturs) {
+            if (c.getDatecour().isBefore(aujourdHui)) {
+                aDeplacer.add(c);
+            }
+        }
+        
+        // Déplacement effectif des cours identifiés
+        for (Cours c : aDeplacer) {
+            listeCoursFuturs.remove(c);
+            listeCoursPassees.add(c);
+            
+            // Mise à jour des listes de chaque client inscrit à ce cours
+            for (Client cl : c.getClientsInscritscours()) {
+                cl.passerCoursEnPasse(c);
+            }
+        }
+    }
+}

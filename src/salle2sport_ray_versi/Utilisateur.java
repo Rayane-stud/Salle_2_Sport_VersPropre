@@ -6,35 +6,61 @@ Groupe CB
 package salle2sport_ray_versi;
 
 /**
- *
+ * Classe abstraite représentant un utilisateur de l'application.
+ * Sert de base commune aux classes Client et Admin.
+ * Regroupe les informations d'authentification partagées par les deux types d'utilisateurs.
+ * 
  * @author rayan
  */
 public abstract class Utilisateur {
     
-    // Attribut en protected pour etre accessible directement des classes filles
-    protected String id_email;
-    protected String motDepasse;
+    // Attributs en protected pour être accessibles directement dans les classes filles
+    // sans passer par des getters, tout en restant encapsulés vis-à-vis de l'extérieur
+    protected String id_email;   // Identifiant de connexion (adresse email)
+    protected String motDepasse; // Mot de passe de connexion
     
-    // Constructeur 
-    public Utilisateur(String id, String mdp){
+    /**
+     * Constructeur de la classe Utilisateur.
+     * Initialise l'identifiant email et le mot de passe.
+     * 
+     * @param id  Adresse email servant d'identifiant unique
+     * @param mdp Mot de passe associé au compte
+     */
+    public Utilisateur(String id, String mdp) {
         id_email = id;
         motDepasse = mdp;
     }
     
-    
-    
-    // Getteur identifiant 
-    public String getIdentifiant(){
+    // _________________________________________________ Getters :
+
+    /**
+     * Retourne l'identifiant (email) de l'utilisateur.
+     * 
+     * @return l'adresse email utilisée comme identifiant
+     */
+    public String getIdentifiant() {
         return id_email;
     }
     
-    // Getteur mot de passe 
-    public String getMot2Passe(){
+    /**
+     * Retourne le mot de passe de l'utilisateur.
+     * Utilisé pour la vérification lors de la connexion ou du changement de mot de passe.
+     * 
+     * @return le mot de passe actuel
+     */
+    public String getMot2Passe() {
         return motDepasse;
     }
     
-    // Permetra de modifier un mdp
-    public void setMot2passe(String mdp){
+    // _________________________________________________ Modifieur :
+
+    /**
+     * Modifie le mot de passe de l'utilisateur.
+     * Appelée uniquement après vérification de l'ancien mot de passe dans la classe Salle.
+     * 
+     * @param mdp le nouveau mot de passe à appliquer
+     */
+    public void setMot2passe(String mdp) {
         this.motDepasse = mdp;
     }
 }
