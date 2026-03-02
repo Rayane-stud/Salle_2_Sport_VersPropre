@@ -31,9 +31,9 @@ public class Cours implements Comparable<Cours> {
     private String activite;                  // Nom de l'activité (ex : "Yoga Relax")
     private LocalDate date;                   // Date du cours
     private LocalTime heure;                  // Heure de début du cours
-    private TypeCours typeCours;              // Catégorie du cours (CARDIO, YOGA, etc.)
+    private TypeCours typeCours;              // Type du cours : Individuel (1 place) ou Collectif (n places)
     private ArrayList<Client> listeInscrits;  // Liste des clients inscrits à ce cours
-    private int nbre_places;                  // Nombre maximum de places disponibles
+    private int nbre_places;                  // Nombre maximum de places (forcé à 1 si Individuel)
     private int id_cours;                     // Identifiant unique du cours, utile pour la recherche,
                                               // le stockage, la suppression précise et l'identification
                                               // sans ambiguïté (évite les doublons)
@@ -43,11 +43,14 @@ public class Cours implements Comparable<Cours> {
      * L'identifiant id_cours est généré dans la classe Salle via prochainIdCours
      * et passé en paramètre lors de la création du cours.
      * 
+     * Si le type est Individuel, le nombre de places est automatiquement forcé à 1,
+     * quelle que soit la valeur passée en paramètre.
+     * 
      * @param activite     Nom de l'activité
      * @param date         Date du cours
      * @param heure        Heure de début
-     * @param typeCours    Type de cours (enum TypeCours)
-     * @param nombrePlaces Nombre maximum de participants
+     * @param typeCours    Type de cours : Individuel ou Collectif
+     * @param nombrePlaces Nombre maximum de participants (ignoré si Individuel)
      * @param id           Identifiant unique attribué par la Salle
      */
     public Cours(String activite, LocalDate date, LocalTime heure, TypeCours typeCours, int nombrePlaces, int id) {
@@ -55,6 +58,9 @@ public class Cours implements Comparable<Cours> {
         this.date = date;
         this.heure = heure;
         this.typeCours = typeCours;
+        if (this.typeCours == TypeCours.Individuel) {
+            nombrePlaces = 1; // un cours individuel n'accepte qu'un seul client
+        }
         this.nbre_places = nombrePlaces;
         this.listeInscrits = new ArrayList<>();
         this.id_cours = id;
@@ -96,7 +102,7 @@ public class Cours implements Comparable<Cours> {
         return heure;
     }
 
-    /** @return le type du cours (CARDIO, YOGA, MUSCULATION, CROSSFIT) */
+    /** @return le type du cours (Individuel ou Collectif) */
     public TypeCours getTypeCours() {
         return typeCours;
     }

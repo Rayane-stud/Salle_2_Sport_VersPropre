@@ -92,7 +92,7 @@ public class Salle {
                 max = c.getNumeroClient();
             }
         }
-        return max + 1;
+        return max + 1;                  
     }
     
     /**

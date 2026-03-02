@@ -14,8 +14,6 @@ package salle2sport_ray_versi;
  * @author rayan
  */
 public enum TypeCours {
-    CARDIO,       
-    MUSCULATION,  
-    YOGA,         
-    CROSSFIT      
+    Individuel,  // Cours individuel : 1 seule place disponible, attribuée automatiquement dans le constructeur de Cours
+    Collectif    // Cours collectif : nombre de places défini lors de la création du cours
 }

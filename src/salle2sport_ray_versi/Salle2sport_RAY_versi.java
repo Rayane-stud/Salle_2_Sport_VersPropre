@@ -60,7 +60,7 @@ public class Salle2sport_RAY_versi {
                 "Cardio Training",
                 LocalDate.now().plusDays(2),  // dans 2 jours
                 LocalTime.of(18, 0),
-                TypeCours.CARDIO,
+                TypeCours.Individuel,
                 10
         );
         
@@ -68,7 +68,7 @@ public class Salle2sport_RAY_versi {
                 "Yoga Relax",
                 LocalDate.now().plusDays(3),  // dans 3 jours
                 LocalTime.of(10, 0),
-                TypeCours.YOGA,
+                TypeCours.Collectif,
                 5
         );
         
@@ -101,7 +101,7 @@ public class Salle2sport_RAY_versi {
                 "Yoga Relax",
                 cours2.getDatecour(),
                 cours2.getHeurecour(),
-                TypeCours.YOGA,
+                TypeCours.Collectif,
                 20); // attendu : false car Gabriel est encore inscrit au cours2
         cours2.afficherCours(); // le nombre de places ne doit pas avoir changé
         
