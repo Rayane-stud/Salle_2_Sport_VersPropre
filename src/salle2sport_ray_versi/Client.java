@@ -211,7 +211,6 @@ public class Client extends Utilisateur {
         System.out.println("Abonnement     : " + this.typeAbonnement);
         System.out.println("Etat           : " + (this.abonnementActif ? "Actif" : "Inactif")); // opérateur ternaire : forme simplifiée d'un if-else
     }
-
     /**
      * Affiche la liste des cours futurs du client dans la console.
      * Méthode à adapter pour l'interface graphique. <== A modifier pour la partie graphique
@@ -226,7 +225,6 @@ public class Client extends Utilisateur {
             }
         }
     }
-
     /**
      * Affiche la liste des cours passés du client dans la console.
      * Méthode à adapter pour l'interface graphique. <== A modifier pour la partie graphique
